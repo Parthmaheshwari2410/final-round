@@ -48,7 +48,13 @@ function findById<T extends { id: number }>(
   return list.find((item) => item.id === id);
 }
 
-//B3
+
+
+
+
+//B3 answer 
+
+
  // Utility Types + Typed React Props
 
  type UpdateMedicineDto =
@@ -68,7 +74,8 @@ function MedicineCard({
 
 
 
-//B11 · ES6+: Debounce &amp; Throttle
+//B11  answer  
+// Debounce 
 export function debounce(fn, delay) {
   let timer;
   return function (...args) {
@@ -80,7 +87,7 @@ timer = setTimeout(() => {
   };
 }
 
-
+// Throttle
 
 
 export function throttle(fn, limit) {
@@ -143,7 +150,33 @@ const medicineSchema =
         type: String,
         required: true,
         minlength: 2
-      },
+      },  category: {
+    type: String,
+    enum: [
+      "Fever",
+      "Allergy",
+      "Antibiotic",
+      "Pain"
+    ],
+    required: true
+  },
+
+  price: {
+    type: Number,
+    min: 0,
+    required: true
+  },
+
+  stock: {
+    type: Number,
+    default: 0
+  }
+},
+
+{
+  timestamps: true
+});
+medicineSchema.index({ category: 1,price: -1});
 
 
      // Aggregation
@@ -176,6 +209,21 @@ const result = await Medicine.aggregate([
   }
 ]);
 
+
+// Find
+
+const medicines = await Medicine.find({
+  stock: {
+    $gt: 0
+  },
+  price: {
+    $gte: 40
+  }
+})
+.sort({
+  price: -1
+})
+.limit(3);
 
 //   B8 --  Node fs, Streams, Events
 
@@ -219,3 +267,18 @@ middleware.ts
 
 // B5 — React Testing Library
 
+
+B7 — Express Security & Extras
+
+// Express Error Middleware
+export function errorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  logger.error(err.message);
+  res.status(500).json({
+    error: "Internal Server Error"
+  });
+}
